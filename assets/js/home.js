@@ -4,7 +4,10 @@ $(document).ready(function(){
     var editor = CodeMirror.fromTextArea(code,{
         lineNumbers : true,
         mode:  "text/x-java",
-        theme: "dracula"
+        theme: "dracula",
+        // extraKeys: {"Ctrl-Q": function(cm) { cm.foldCode(cm.getCursor()); }},
+        foldGutter: true,
+        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
     });
   
     
