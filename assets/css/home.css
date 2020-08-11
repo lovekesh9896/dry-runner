@@ -1,5 +1,11 @@
-textarea{
-    border: 2px solid red ;
-    width: 400px;
-    height: 200px;
+#submit-button{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    outline: none;
+    border: none;
+    z-index: 2;
 }
