@@ -7,5 +7,5 @@
     border-radius: 25px;
     outline: none;
     border: none;
-    z-index: 2;
+    z-index: 1000;
 }

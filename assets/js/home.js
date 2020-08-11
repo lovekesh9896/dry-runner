@@ -33,6 +33,7 @@ $(document).ready(function(){
     // when submit button is clicked it will send a ajax request to the server
     $('#submit-button').click(function(event){
         event.preventDefault();
+        console.log("Submit button pressed");
         var data = myCodeMirror.getValue();
         sendAJAX(data);
     });
