@@ -22,7 +22,8 @@ module.exports.submitCode = function(req, res){
 }
 
 var createFile = function(data){
-    fs.appendFile('exp.java', data, function (err) {
+    var updated = data.replace(/System.out/g, 'writer');
+    fs.appendFile('exp.java', updated, function (err) {
         if (err) throw err;
         console.log('Saved!');
         executeFile();
@@ -40,11 +41,13 @@ var executeFile = function(){
             var secondCommand = "java exp";
             exec(secondCommand, function(err, stdout, stderr){
                 if(err){
-                    console.log("Error in compiling the java file");
+                    console.log("Error in executing the java file",err);
                     return;
                 }
                 console.log(stdout);
                 console.log("File executed successfuly");
+                fs.unlinkSync('exp.java');
+                fs.unlinkSync('exp.class');
             });
         }
         
