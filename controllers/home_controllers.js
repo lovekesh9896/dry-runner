@@ -1,5 +1,6 @@
 const fs = require('fs');
-const exec = require('child_process').exec;
+const child_process = require('child_process');
+
 module.exports.home = function(req, res){
 
     return res.render("home", {
@@ -65,26 +66,55 @@ var createFile = function(data){
 }
 
 var executeFile = function(){
-    var firstCommand = "javac exp.java";
-    exec(firstCommand, function(err, stdout, stderr){
-        if(err){
-            console.log("Error in compiling the java file", err);
-            return;
-        }else{
-            console.log("compilation completed");
-            var secondCommand = "java exp";
-            exec(secondCommand, function(err, stdout, stderr){
-                if(err){
-                    console.log("Error in executing the java file",err);
-                    return;
-                }
-                console.log(stdout);
-                console.log("File executed successfuly");
-                fs.unlinkSync('exp.java');
-                fs.unlinkSync('exp.class');
-                
-            });
+    const firstCommand = child_process.spawnSync('javac', ['exp.java']);
+    console.log(firstCommand);
+    if(firstCommand.status == 0){
+        const a = child_process.spawnSync('java' , ['exp'],  { input: '2 3 8 100 200' });
+        if(a.status == 0){
+            fs.unlinkSync('exp.java');
+            fs.unlinkSync('exp.class');
+            console.log("File executed successfuly");
         }
+    }
+    
+    // secondCommand.stdout.on('data', stdout => {
+    //     console.log(stdout.toString());
+    // });
+    // secondCommand.stderr.on('data', stderr => {
+    //     console.log(stderr.toString());
+    // });
+    
+    // secondCommand.on('close', code => {
+    //     console.log("File executed successfuly");
+    //     fs.unlinkSync('exp.java');
+    //     fs.unlinkSync('exp.class');
+    // });
+    // exec(firstCommand, function(err, stdout, stderr){
+    //     if(err){
+    //         console.log("Error in compiling the java file", err);
+    //         return;
+    //     }else{
+    //         console.log("compilation completed");
+            
+    //         var secondCommand = "java exp";
+            // exec(secondCommand, function(err, stdout, stderr){
+            //     if(err){
+            //         console.log("Error in executing the java file",err);
+            //         return;
+            //     }
+            //     exec('12', function(err,stdout,stderr){
+            //         if(err){
+            //             console.log("Error in passing the input",err);
+            //             return;
+            //         }
+            //     });
+            //     console.log(stdout);
+            //     console.log("File executed successfuly");
+            //     fs.unlinkSync('exp.java');
+            //     fs.unlinkSync('exp.class');
+                
+            // });
+    //     }
         
-    });
+    // });
 }

@@ -2,10 +2,25 @@ console.log("working");
 $(document).ready(function(){
 
     var editorDefaultValue = 
-`public static void print(){
-    /* write your code here */
-    System.out.println('Hello World!');
-}`
+`public class exp {
+    
+    public static void print(int i){
+		if(i<1){
+			return;
+		}
+		System.out.println(i);
+		print(i-1);
+		
+	}
+	
+	public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
+		
+		System.out.println("Hello world!");
+		print(10);
+	}
+
+}
+`
 
     var myCodeMirror = CodeMirror(document.body, {
         lineNumbers : true,
