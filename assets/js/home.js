@@ -16,6 +16,7 @@ $(document).ready(function(){
         foldGutter: true,
         gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
       });
+      console.log(myCodeMirror);
       // below is the dummy code in case i want to use my own textarea
     //   {
             // var code = $('.codemirror-textarea')[0];
