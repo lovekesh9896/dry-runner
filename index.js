@@ -1,7 +1,7 @@
 const express = require('express'); // runnig our app on express
 const path = require('path');
 const app = express();
-const port = 8000;
+const port = 9000;
 const fs = require('fs');
 app.set('view engine', 'ejs');
 app.set('views', 'views');
