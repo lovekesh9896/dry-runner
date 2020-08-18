@@ -2,20 +2,20 @@
 body{
   margin: 0;
   padding: 0;
+  overflow: hidden;
 }
 
 .CodeMirror {
   /* Set height, width, borders, and global font properties here */
   font-family: monospace;
-  height: 100vh;
+  height: 80vh;
   color: black;
   box-sizing: border-box;
   direction: ltr;
-  border: 2px solid red;
-  border-radius: 8px;
   font-size: 16px;
-  /* background-color: rgb(43,53,74) !important; */
-  
+  top: -90.8vh;
+  left: 25vw;
+  width: 75vw;
 }
 
 /* PADDING */
