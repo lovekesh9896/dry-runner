@@ -46,24 +46,25 @@ var extractClassNames = function(data){
 }
 
 var extractFunctionNames = function(data){
-    funclers wrrvwrv ervtv
-
+    
     for(let i=0;i<dicType.length;i++){
         var toSearch = dicType[i];
-        var a = data.indexOf(" "+toSearch);
+        var a = data.indexOf(" "+toSearch+" ");
         while(a != -1){
             console.log("a == ",a);
             console.log("line 53", data.indexOf("(",a), data.indexOf(";",a));
             if(data.indexOf("(",a) != -1 && data.indexOf("(",a) < data.indexOf(";",a) && data.indexOf("(",a) < data.indexOf("{",a)){
                 var varCount = data.slice(data.indexOf("(",a), data.indexOf(")",a)).split(",").length;
-                var tempData = data.slice(a+toSearch.length+1, data.indexOf("(",a)).trim();
+                var tempData = data.slice(a+toSearch.length+2, data.indexOf("(",a)).trim();
                 console.log("lien 55",tempData);
-                console.log(toSearch);
-                var name = {};
-                name.name = tempData;
-                name.type = toSearch;
-                name.varCount = varCount;
-                functionNames.push(name);
+                if(data.indexOf(toSearch + " "+tempData) == data.indexOf(toSearch + " "+tempData+"(")){
+                    var name = {};
+                    name.name = tempData;
+                    name.type = toSearch;
+                    name.varCount = varCount;
+                    functionNames.push(name);
+                }
+                
             }
             a = data.indexOf(" "+toSearch,a+1);
         }
@@ -103,7 +104,7 @@ var addFunctionComments = function(data){
 
 var createFile = function(data, customInput){
     
-    data = data.replace(/System.out/g, 'writer').replace(/  +/g, ' ').replace(" {", "{");
+    data = data.replace(/System.out/g, 'writer').replace(/  +/g, ' ').replace(" {", "{").replace(" (","(");
     extractClassNames(data);
     extractFunctionNames(data);
     data = addFunctionComments(data);

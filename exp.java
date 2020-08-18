@@ -1,12 +1,10 @@
 import java.io.*;
-
+import java.util.*;
 public class exp{
 
     public static PrintWriter writer; 
-riter = new PrintWriter("the-file-name.txt", "UTF-8");
-writer.println("entered Main function");
- 
- public static int[] allindex(int input[],int x,int si,int arr[],int in) throws FileNotFoundException, UnsupportedEncodingException{
+
+ public static int[] allindex(int input[],int x,int si,int arr[],int in){
  if(si==input.length){
  if(in!=si){
  int arr2[] = new int[in];
@@ -21,8 +19,8 @@ writer.println("entered Main function");
  arr[in] = si;
  in++;
  }
- int arr3[] = allindex(input,x,si+1,arr,in);
- return arr3;
+ writer.println("Entered allindex");return allindex(input,x,si+1,arr,in);
+ 
  
  }
 
@@ -31,8 +29,10 @@ writer.println("entered Main function");
  writer.println("Entered allindex");return allindex(input,x,0,arr,0);
 	}
 	
-	public static void main(String[] argd){
-		Scaner s = new Scaner(System.in);
+	public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException{
+writer = new PrintWriter("the-file-name.txt", "UTF-8");
+writer.println("entered Main function");
+		Scanner s = new Scanner(System.in);
 		int n = s.nextInt();
 		int arr[] = new int[n];
 		for(int i=0;i<n;i++){
@@ -41,7 +41,7 @@ writer.println("entered Main function");
 		int m = s.nextInt();
 		int ans[] = allIndexes(arr, m);
 		for(int i=0;i<ans.length;i++){
-			writer.print(arr[i] + " ");
+			writer.print(ans[i] + " ");
 		}
 	
 writer.close();

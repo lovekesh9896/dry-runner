@@ -1,2 +1,8 @@
 entered Main function
-32
+Entered allindex
+Entered allindex
+Entered allindex
+Entered allindex
+Entered allindex
+Entered allindex
+1 3 4 
