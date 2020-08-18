@@ -1,23 +1,2 @@
 entered Main function
-Hello world!
-entered new function and code is added
-10
-entered new function and code is added
-9
-entered new function and code is added
-8
-entered new function and code is added
-7
-entered new function and code is added
-6
-entered new function and code is added
-5
-entered new function and code is added
-4
-entered new function and code is added
-3
-entered new function and code is added
-2
-entered new function and code is added
-1
-entered new function and code is added
+32
