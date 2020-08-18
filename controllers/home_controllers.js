@@ -46,6 +46,8 @@ var extractClassNames = function(data){
 }
 
 var extractFunctionNames = function(data){
+    funclers wrrvwrv ervtv
+
     for(let i=0;i<dicType.length;i++){
         var toSearch = dicType[i];
         var a = data.indexOf(" "+toSearch);
