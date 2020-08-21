@@ -1,8 +1,16 @@
-entered Main function
-Entered allindex
-Entered allindex
-Entered allindex
-Entered allindex
-Entered allindex
-Entered allindex
-1 3 4 
+Entered main [Ljava.lang.String;@d716361 
+Entered towerOfHanoi 3 a b c 
+Entered towerOfHanoi 2 a c b 
+Entered towerOfHanoi 1 a b c 
+exit towerOfHanoi
+Entered towerOfHanoi 1 c a b 
+exit towerOfHanoi
+exit towerOfHanoi
+Entered towerOfHanoi 2 b a c 
+Entered towerOfHanoi 1 b c a 
+exit towerOfHanoi
+Entered towerOfHanoi 1 a b c 
+exit towerOfHanoi
+exit towerOfHanoi
+exit towerOfHanoi
+exit main
