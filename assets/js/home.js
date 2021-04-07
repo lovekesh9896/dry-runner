@@ -1,4 +1,5 @@
 console.log("working");
+
 $(document).ready(function(){
 
     var editorDefaultValue;
@@ -6,10 +7,12 @@ $(document).ready(function(){
         editorDefaultValue = localStorage.getItem('lastCode');
     }else{
         editorDefaultValue = 
-`public static void print(){
-    /* write your code here */
-    System.out.println('Hello World!');
-}`
+`public class exp {
+	public static void main(String[] args){
+		System.out.print("hello world!");
+	}	
+}
+`
     }
     
 
@@ -47,8 +50,8 @@ $(document).ready(function(){
     // when submit button is clicked it will send a ajax request to the server
     
     $('#submit-button').click(function(event){
-        $('#submit-button').html('<span class="material-icons">done</span>');
-        $('#submit-button').addClass('onSubmit');
+        // $('#submit-button').html('<span class="material-icons">done</span>');
+        // $('#submit-button').addClass('onSubmit');
         
         console.log("Submit button pressed");
         var data = myCodeMirror.getValue();
@@ -69,13 +72,51 @@ let sendAJAX = function(data, customInput){
             customInput : customInput
         },
         success : function(data){
-            $('#submit-button').css('background-color', 'green');
-            $('#submit-button').css('color', 'white');
+            $('#output-div').css('display','initial');
+            $('#output-div-span').text(data.data);
+            createTemplate(data.data, 10, 10);
+            console.log(data.data);
+            let ul = document.createElement('ul')
+            createLi(data.data, ul);
+            // tryQueue();
         },
         error : function(){
             console.log("Error in recieveing data");
         }
     });
+}
+
+let createTemplate = function(data,top,left){
+    console.log("entred");
+    if(data.childCount <= 0){
+        console.log("returned");
+        return;
+    }
+    let a = `<div><span style="margin-left:${left}px">${data.name}</span></div>`;
+    $('#output-div-span').append(a);
+    let tempString;
+    let nonempty = new Queue(); 
+    nonempty.enqueue(data);
+    var c = 10;
+		while(nonempty.size() != 0 ) {
+            // c--;
+            tempString = `<div style=margin-top:${top}px>`
+            let a = nonempty.size();
+            for(let i=0;i<a;i++) {
+                left = 0;
+                let temp = nonempty.dequeue();
+                let b = temp.childCount;
+                for(let j=0;j<b;j++) {
+                    nonempty.enqueue(temp.children[j]);
+				}
+                tempString = `${tempString} <span style="margin-left:${left}px">${temp.name} (${temp.vars})</span>`
+                left = left + 10;
+			}
+            tempString = tempString + '</div>';
+            $('#output-div-span').append(tempString);
+            top = top +10;
+            tempString = '';
+		}
 }
 
 let themes = function(myCodeMirror){
@@ -121,4 +162,23 @@ let customInput = function(){
     });
 }
 
+$('#cross-output-div').click(function(){
+    $('#output-div').css('display','none');
+});
 
+// //////////////////// Test ////////////////////////////////////
+let createLi = function(data, mainUl){
+    var value = $(e.target).val();
+    var span = $(e.target).parent();
+    var ulList = span.next()[0];
+    // console.log(ulList);
+    if (typeof ulList !== "undefined" && ulList.tagName == "UL") {
+      $(ulList).append(
+        `<li><span class="tf-nc">${value}<input type="text"></span></li>`
+      );
+    } else {
+      $(span).after(
+        `<ul><li><span class="tf-nc">${value}<input type="text"></span></li></ul>`
+      );
+    }
+}

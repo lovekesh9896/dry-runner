@@ -197,3 +197,22 @@ div{
 }
 
 
+/*  output div */
+#output-div{
+    width: 90vw;
+    height: 90vh;
+    box-sizing: border-box;
+    border: 1px solid red;
+    position: fixed;
+    top: 5vh;
+    left: 5vw;
+    z-index: 2000;
+    background-color: white;
+    display: none;
+}
+
+#cross-output-div{
+    position: absolute;
+    top: 0;
+    right: 0;
+}
