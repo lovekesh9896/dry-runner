@@ -1,5 +1,6 @@
 const fs = require("fs"); // for saving java file
 const child = require("child_process"); // for executing java code
+const { v4: uuidv4 } = require("uuid");
 // used to execute java file before any chnge is made
 // using spawnsync because we don't want to execute exp.class before creation
 let executeFileBefore = function (customInput) {
@@ -205,19 +206,58 @@ class Stack {
 		this.items = [];
 	}
 }
-
+let dict = [];
 function addStatementInOneFunction(data, type, args) {
 	let functionName = type.split(" ")[1];
-	let printEnterStatement = `System.out.println("Entered ${functionName}")`;
-	let printArgs = "System.out.println(";
+	let returnType = type.split(" ")[0];
+	let uuid = uuidv4();
+	dict.push({
+		key: uuid,
+		value: functionName,
+	});
+	let printEnterStatement = `System.out.println("Entered ${uuid}");`;
+	let printArgs = `System.out.println("IN ${uuid} "+`;
 	for (let i of args) {
 		printArgs += i.split(" ")[1] + '+ " "+';
 	}
 	printArgs = printArgs.substring(0, printArgs.length - 1);
-	printArgs += ")";
-	let printExitSatement = `System.out.println("Exit ${functionName}")`;
+	printArgs += ");";
+	let printExitSatement = `System.out.println("Exit ${uuid}");`;
 	let stack = new Stack();
-	// console.log(printEnterStatement, printArgs, printExitSatement);
+	let index = data.indexOf(type + "(");
+	let firstIndexOfOpenBrac = data.indexOf("{", index + type.length);
+	data =
+		data.slice(0, firstIndexOfOpenBrac + 1) +
+		printEnterStatement +
+		printArgs +
+		data.slice(firstIndexOfOpenBrac + 1);
+	index = firstIndexOfOpenBrac;
+	stack.push("{");
+	index++;
+	let word = "";
+	let prev = index;
+	while (!stack.isEmpty()) {
+		let char = data.charAt(index);
+		if (char == "{") {
+			stack.push("{");
+		} else if (char == "}") {
+			stack.remove();
+		} else if (char == " ") {
+			if (word == "return") {
+				data =
+					data.slice(0, index - 7) +
+					printExitSatement +
+					data.slice(index - 7);
+				index = index + printExitSatement.length;
+			}
+			prev = index;
+			word = "";
+		} else {
+			word += char;
+		}
+		index++;
+	}
+	return data;
 }
 
 function printFunctionArgs(functionNamesSet, data) {
@@ -229,8 +269,9 @@ function printFunctionArgs(functionNamesSet, data) {
 		let arr = argsStr
 			.split(",")
 			.map(Function.prototype.call, String.prototype.trim);
-		addStatementInOneFunction(data, item, arr);
+		data = addStatementInOneFunction(data, item, arr);
 	}
+	fs.writeFileSync("exp.java", data);
 }
 
 var extractFunctionNames = function (data, functionNames, dicType, indexes) {
@@ -293,7 +334,11 @@ var extractFunctionNames = function (data, functionNames, dicType, indexes) {
 		"while",
 		"else if",
 	];
-	data = data.replace(/  +/g, " ").replace(/\t/g, " ").replace(/}/g, "} ");
+	data = data
+		.replace(/  +/g, " ")
+		.replace(/\t/g, " ")
+		.replace(/}/g, "} ")
+		.replace(/ \(/g, "(");
 	let otherSymbols = ["(", " ", ")", ";", "="];
 
 	function searchCharInSymbols(name) {
@@ -320,8 +365,8 @@ var extractFunctionNames = function (data, functionNames, dicType, indexes) {
 
 			if (
 				!reservedWords.includes(functionName) &&
-				searchCharInSymbols(functionName) &&
-				searchCharInSymbols(returnType) &&
+				searchCharInSymbols(functionName.trim()) &&
+				searchCharInSymbols(returnType.trim()) &&
 				data.charAt(indexOfReturnType - 2) != "=" &&
 				indexOfNextOpenCurlBrac < indexOfNextColon
 			) {
@@ -330,6 +375,7 @@ var extractFunctionNames = function (data, functionNames, dicType, indexes) {
 		}
 		index = data.indexOf("(", index + 1);
 	}
+	console.log(arr);
 	printFunctionArgs(arr, data);
 	// console.log("line 87", functionNames);
 	// return data;
@@ -423,140 +469,142 @@ var addFunctionEndPrintStatement = function (data, functionNames, indexes) {
 	return data;
 };
 
-var createJson = function (data) {
-	console.log(data);
-	var arr = data.split("\n");
-	// console.log(arr);
-	var ans = {};
-	var level = 0;
-	for (var i = 0; i < arr.length; i++) {
-		// console.log("inside i ",i);
-		var elem = arr[i];
-		if (elem == "") {
-			// console.log("inside continue");
-			continue;
-		} else {
-			// console.log("inside continue else");
-			if (elem.indexOf("exit") != -1 || elem.indexOf("Entered") != -1) {
-				// console.log("inside continue else continue-exit");
+// var createJson = function (data) {
+// 	console.log(data);
+// 	var arr = data.split("\n");
+// 	// console.log(arr);
+// 	var ans = {};
+// 	var level = 0;
+// 	for (var i = 0; i < arr.length; i++) {
+// 		// console.log("inside i ",i);
+// 		var elem = arr[i];
+// 		if (elem == "") {
+// 			// console.log("inside continue");
+// 			continue;
+// 		} else {
+// 			// console.log("inside continue else");
+// 			if (elem.indexOf("exit") != -1 || elem.indexOf("Entered") != -1) {
+// 				// console.log("inside continue else continue-exit");
 
-				var tempArr = elem.split(" ");
-				if (tempArr[0] == "exit") {
-					// console.log("inside continue else exit");
+// 				var tempArr = elem.split(" ");
+// 				if (tempArr[0] == "exit") {
+// 					// console.log("inside continue else exit");
 
-					level--;
-				} else {
-					// console.log("inside continue else continue");
+// 					level--;
+// 				} else {
+// 					// console.log("inside continue else continue");
 
-					if (level == 0) {
-						// console.log("inside continue else continue-0");
-						// console.log("level ",level);
-						ans.name = tempArr[1];
-						ans.vars = a;
-						ans.childCount = 0;
-						ans.children = [];
-						level++;
-						// console.log("ans is",ans);
-					} else {
-						// console.log("inside continue else continue-non zero");
-						var zz = ans;
-						// console.log("level ",level);
-						for (let k = 0; k < level - 1; k++) {
-							zz = zz.children[zz.childCount - 1];
-						}
+// 					if (level == 0) {
+// 						// console.log("inside continue else continue-0");
+// 						// console.log("level ",level);
+// 						ans.name = tempArr[1];
+// 						ans.vars = a;
+// 						ans.childCount = 0;
+// 						ans.children = [];
+// 						level++;
+// 						// console.log("ans is",ans);
+// 					} else {
+// 						// console.log("inside continue else continue-non zero");
+// 						var zz = ans;
+// 						// console.log("level ",level);
+// 						for (let k = 0; k < level - 1; k++) {
+// 							zz = zz.children[zz.childCount - 1];
+// 						}
 
-						var a = "(";
-						for (let j = 2; j < tempArr.length; j++) {
-							if (tempArr[j] != "") {
-								a = a + tempArr[j] + ",";
-							}
-						}
-						a = a + ")";
-						var tempAns = {};
-						tempAns.name = tempArr[1];
-						tempAns.vars = a;
-						tempAns.childCount = 0;
-						tempAns.children = [];
-						zz.childCount++;
-						zz.children.push(tempAns);
-						level++;
-						// console.log("ans is ",JSON.stringify(ans, null, 4));
-					}
-				}
-			}
-		}
-	}
+// 						var a = "(";
+// 						for (let j = 2; j < tempArr.length; j++) {
+// 							if (tempArr[j] != "") {
+// 								a = a + tempArr[j] + ",";
+// 							}
+// 						}
+// 						a = a + ")";
+// 						var tempAns = {};
+// 						tempAns.name = tempArr[1];
+// 						tempAns.vars = a;
+// 						tempAns.childCount = 0;
+// 						tempAns.children = [];
+// 						zz.childCount++;
+// 						zz.children.push(tempAns);
+// 						level++;
+// 						// console.log("ans is ",JSON.stringify(ans, null, 4));
+// 					}
+// 				}
+// 			}
+// 		}
+// 	}
 
-	var ans1 = JSON.stringify(ans, null, 4);
-	// console.log(ans1);
-	return ans1;
-};
+// 	var ans1 = JSON.stringify(ans, null, 4);
+// 	// console.log(ans1);
+// 	return ans1;
+// };
 
-var createTree = function (data) {
-	console.log(data);
-	var arr = data.split("\n");
-	// console.log(arr);
-	var ans = {};
-	var level = 0;
-	for (var i = 0; i < arr.length; i++) {
-		// console.log("inside i ",i);
-		var elem = arr[i];
-		if (elem == "") {
-			// console.log("inside continue");
-			continue;
-		} else {
-			// console.log("inside continue else");
-			if (elem.indexOf("exit") != -1 || elem.indexOf("Entered") != -1) {
-				// console.log("inside continue else continue-exit");
+// var createTree = function (data) {
+// 	console.log(data);
+// 	var arr = data.split("\n");
+// 	// console.log(arr);
+// 	var ans = {};
+// 	var level = 0;
+// 	for (var i = 0; i < arr.length; i++) {
+// 		// console.log("inside i ",i);
+// 		var elem = arr[i];
+// 		if (elem == "") {
+// 			// console.log("inside continue");
+// 			continue;
+// 		} else {
+// 			// console.log("inside continue else");
+// 			if (elem.indexOf("exit") != -1 || elem.indexOf("Entered") != -1) {
+// 				// console.log("inside continue else continue-exit");
 
-				var tempArr = elem.split(" ");
-				if (tempArr[0] == "exit") {
-					// console.log("inside continue else exit");
+// 				var tempArr = elem.split(" ");
+// 				if (tempArr[0] == "exit") {
+// 					// console.log("inside continue else exit");
 
-					level--;
-				} else {
-					// console.log("inside continue else continue");
+// 					level--;
+// 				} else {
+// 					// console.log("inside continue else continue");
 
-					if (level == 0) {
-						// console.log("inside continue else continue-0");
-						// console.log("level ",level);
-						ans.name = tempArr[1];
-						ans.vars = a;
-						ans.childCount = 0;
-						ans.children = [];
-						level++;
-						// console.log("ans is",ans);
-					} else {
-						// console.log("inside continue else continue-non zero");
-						var zz = ans;
-						// console.log("level ",level);
-						for (let k = 0; k < level - 1; k++) {
-							zz = zz.children[zz.childCount - 1];
-						}
+// 					if (level == 0) {
+// 						// console.log("inside continue else continue-0");
+// 						// console.log("level ",level);
+// 						ans.name = tempArr[1];
+// 						ans.vars = a;
+// 						ans.childCount = 0;
+// 						ans.children = [];
+// 						level++;
+// 						// console.log("ans is",ans);
+// 					} else {
+// 						// console.log("inside continue else continue-non zero");
+// 						var zz = ans;
+// 						// console.log("level ",level);
+// 						for (let k = 0; k < level - 1; k++) {
+// 							zz = zz.children[zz.childCount - 1];
+// 						}
 
-						var a = "(";
-						for (let j = 2; j < tempArr.length; j++) {
-							if (tempArr[j] != "") {
-								a = a + tempArr[j] + ",";
-							}
-						}
-						a = a + ")";
-						var tempAns = {};
-						tempAns.name = tempArr[1];
-						tempAns.vars = a;
-						tempAns.childCount = 0;
-						tempAns.children = [];
-						zz.childCount++;
-						zz.children.push(tempAns);
-						level++;
-						// console.log("ans is ",JSON.stringify(ans, null, 4));
-					}
-				}
-			}
-		}
-	}
+// 						var a = "(";
+// 						for (let j = 2; j < tempArr.length; j++) {
+// 							if (tempArr[j] != "") {
+// 								a = a + tempArr[j] + ",";
+// 							}
+// 						}
+// 						a = a + ")";
+// 						var tempAns = {};
+// 						tempAns.name = tempArr[1];
+// 						tempAns.vars = a;
+// 						tempAns.childCount = 0;
+// 						tempAns.children = [];
+// 						zz.childCount++;
+// 						zz.children.push(tempAns);
+// 						level++;
+// 						// console.log("ans is ",JSON.stringify(ans, null, 4));
+// 					}
+// 				}
+// 			}
+// 		}
+// 	}
 
-	var ans1 = JSON.stringify(ans, null, 4);
-	// console.log(ans1);
-	return ans1;
-};
+// 	var ans1 = JSON.stringify(ans, null, 4);
+// 	// console.log(ans1);
+// 	return ans1;
+// };
+
+let createJson = (output) => {};
