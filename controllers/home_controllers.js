@@ -42,7 +42,7 @@ let executeFileAfter = function (customInput) {
 		});
 		if (secondCommand.status == 0) {
 			let json = String(secondCommand.stdout);
-			// console.log(json);
+			console.log("line 37", json);
 			let ans = createJson(json);
 			// console.log(ans);
 			console.log("all done after");
@@ -70,6 +70,7 @@ var addExtraPrintStatement = function (
 	dicType,
 	indexes
 ) {
+	console.log("addExtraPrintStatement started");
 	javaCode = javaCode
 		.replace(/  +/g, " ")
 		.replace(" {", "{")
@@ -77,7 +78,7 @@ var addExtraPrintStatement = function (
 	// extractClassNames(javaCode, dicType);
 	// console.log("extract classes done");
 	javaCode = extractFunctionNames(javaCode, functionNames, dicType, indexes);
-	console.log("extract function done");
+	console.log("extract function done", javaCode);
 
 	javaCode = addFunctionEndPrintStatement(javaCode, functionNames, indexes);
 
@@ -91,16 +92,20 @@ var addExtraPrintStatement = function (
 		'System.out.println("exit main");\n' +
 		javaCode.slice(indexOfCloseBracket);
 
+	console.log("addExtraPrintStatement ended", javaCode);
+
 	return javaCode;
 };
 
 // first function to call after user original code is checked for errors
 // main logic starts from here
 let startChangingAfter = function (javaCode, codeInput) {
+	console.log("startChangingAfter started");
 	// creating variables to store data types and function names
 	let functionNames = [];
 	let dicType = ["int", "String", "boolean", "void", "int[]"];
 	let indexes = [];
+	console.log("javacode till here is same");
 	// updating the user code
 	javaCode = addExtraPrintStatement(
 		javaCode,
@@ -108,8 +113,12 @@ let startChangingAfter = function (javaCode, codeInput) {
 		dicType,
 		indexes
 	);
+	console.log("startchangingafter javacode", javaCode);
+
 	let CreateFileAfter = fs.writeFileSync("exp.java", javaCode);
 	var ans = executeFileAfter(codeInput);
+	console.log("startChangingAfter ended");
+
 	return ans;
 	// console.log("ans from line 82",ans);
 	// console.log("ans for line 196",ans);
@@ -124,25 +133,26 @@ module.exports.home = function (req, res) {
 module.exports.submitCode = function (req, res) {
 	// checking the code for errors
 	console.log("request recieved");
-	extractFunctionNames(req.body.data1);
+	// extractFunctionNames(req.body.data1);
 	// let checkFile = fileCheckBefore(req.body.data1, req.body.customInput);
 	// console.log(checkFile);
-	// if (checkFile == "200") {
-	// 	// if code without changes is correct
-	// 	// changing code
-	// 	let ans = startChangingAfter(req.body.data1, req.body.customInput);
-	// 	// console.log(ans);
-	// 	return res.status(200).json({
-	// 		data: JSON.parse(ans),
-	// 		meaasge: "success",
-	// 	});
-	// } else {
-	// code is invalid
-	return res.status(200).json({
-		// data: checkFile,
-		meaasge: "Error in Code",
-	});
-	// }
+	// checkFile == 200
+	if (true) {
+		// if code without changes is correct
+		// changing code
+		let ans = startChangingAfter(req.body.data1, req.body.customInput);
+		console.log("b", ans);
+		return res.status(200).json({
+			data: JSON.parse(ans),
+			meaasge: "success",
+		});
+	} else {
+		// code is invalid
+		return res.status(200).json({
+			data: checkFile,
+			meaasge: "Error in Code",
+		});
+	}
 };
 
 var extractClassNames = function (data, dicType) {
@@ -210,19 +220,19 @@ let dict = [];
 function addStatementInOneFunction(data, type, args) {
 	let functionName = type.split(" ")[1];
 	let returnType = type.split(" ")[0];
-	let uuid = uuidv4();
+	let uuid = "";
 	dict.push({
 		key: uuid,
 		value: functionName,
 	});
-	let printEnterStatement = `System.out.println("Entered ${uuid}");`;
-	let printArgs = `System.out.println("IN ${uuid} "+`;
+	let printEnterStatement = "";
+	let printArgs = `System.out.println();System.out.println("IN ${functionName} ${uuid} "+`;
 	for (let i of args) {
 		printArgs += i.split(" ")[1] + '+ " "+';
 	}
 	printArgs = printArgs.substring(0, printArgs.length - 1);
 	printArgs += ");";
-	let printExitSatement = `System.out.println("Exit ${uuid}");`;
+	let printExitSatement = `System.out.println("Exit ${functionName} ${uuid}");`;
 	let stack = new Stack();
 	let index = data.indexOf(type + "(");
 	let firstIndexOfOpenBrac = data.indexOf("{", index + type.length);
@@ -261,6 +271,7 @@ function addStatementInOneFunction(data, type, args) {
 }
 
 function printFunctionArgs(functionNamesSet, data) {
+	console.log("printFunctionArgs started");
 	for (let item of functionNamesSet) {
 		let indexOfItem = data.indexOf(item);
 		let indexOfOpenBrac = data.indexOf("(", indexOfItem);
@@ -271,10 +282,17 @@ function printFunctionArgs(functionNamesSet, data) {
 			.map(Function.prototype.call, String.prototype.trim);
 		data = addStatementInOneFunction(data, item, arr);
 	}
-	fs.writeFileSync("exp.java", data);
+	console.log("data from printFunctionArgs", data);
+	console.log(
+		"printFunctionArgs ended, javacode containes all the statements here"
+	);
+
+	return data;
+	// fs.writeFileSync("exp.java", data);
 }
 
 var extractFunctionNames = function (data, functionNames, dicType, indexes) {
+	console.log("extractFunctionNames started");
 	let reservedWords = [
 		"abstract",
 		"assert",
@@ -375,10 +393,12 @@ var extractFunctionNames = function (data, functionNames, dicType, indexes) {
 		}
 		index = data.indexOf("(", index + 1);
 	}
-	console.log(arr);
-	printFunctionArgs(arr, data);
+	console.log(arr, "javacode till jhere is same");
+	data = printFunctionArgs(arr, data);
 	// console.log("line 87", functionNames);
-	// return data;
+	console.log("extractFunctionNames ended", data);
+
+	return data;
 };
 
 // var addFunctionComments = function(data){
@@ -447,6 +467,7 @@ var extractFunctionNames = function (data, functionNames, dicType, indexes) {
 
 var addFunctionEndPrintStatement = function (data, functionNames, indexes) {
 	var c = 0;
+	console.log("line 458 data", data);
 	for (let i = 0; i < indexes.length - 1; i++) {
 		let a = indexes[i + 1] + c;
 		let b = data.indexOf("return", indexes[i] + c);
@@ -466,77 +487,78 @@ var addFunctionEndPrintStatement = function (data, functionNames, indexes) {
 		}
 	}
 
+	console.log("line 477", data);
 	return data;
 };
 
-// var createJson = function (data) {
-// 	console.log(data);
-// 	var arr = data.split("\n");
-// 	// console.log(arr);
-// 	var ans = {};
-// 	var level = 0;
-// 	for (var i = 0; i < arr.length; i++) {
-// 		// console.log("inside i ",i);
-// 		var elem = arr[i];
-// 		if (elem == "") {
-// 			// console.log("inside continue");
-// 			continue;
-// 		} else {
-// 			// console.log("inside continue else");
-// 			if (elem.indexOf("exit") != -1 || elem.indexOf("Entered") != -1) {
-// 				// console.log("inside continue else continue-exit");
+var createJson = function (data) {
+	console.log(data);
+	var arr = data.split("\n");
+	// console.log(arr);
+	var ans = {};
+	var level = 0;
+	for (var i = 0; i < arr.length; i++) {
+		// console.log("inside i ",i);
+		var elem = arr[i];
+		if (elem == "") {
+			// console.log("inside continue");
+			continue;
+		} else {
+			// console.log("inside continue else");
+			if (elem.indexOf("Exit") != -1 || elem.indexOf("IN") != -1) {
+				// console.log("inside continue else continue-exit");
 
-// 				var tempArr = elem.split(" ");
-// 				if (tempArr[0] == "exit") {
-// 					// console.log("inside continue else exit");
+				var tempArr = elem.split(" ");
+				if (tempArr[0] == "Exit") {
+					// console.log("inside continue else exit");
 
-// 					level--;
-// 				} else {
-// 					// console.log("inside continue else continue");
+					level--;
+				} else {
+					// console.log("inside continue else continue");
 
-// 					if (level == 0) {
-// 						// console.log("inside continue else continue-0");
-// 						// console.log("level ",level);
-// 						ans.name = tempArr[1];
-// 						ans.vars = a;
-// 						ans.childCount = 0;
-// 						ans.children = [];
-// 						level++;
-// 						// console.log("ans is",ans);
-// 					} else {
-// 						// console.log("inside continue else continue-non zero");
-// 						var zz = ans;
-// 						// console.log("level ",level);
-// 						for (let k = 0; k < level - 1; k++) {
-// 							zz = zz.children[zz.childCount - 1];
-// 						}
+					if (level == 0) {
+						// console.log("inside continue else continue-0");
+						// console.log("level ",level);
+						ans.name = tempArr[1];
+						ans.vars = a;
+						ans.childCount = 0;
+						ans.children = [];
+						level++;
+						// console.log("ans is",ans);
+					} else {
+						// console.log("inside continue else continue-non zero");
+						var zz = ans;
+						// console.log("level ",level);
+						for (let k = 0; k < level - 1; k++) {
+							zz = zz.children[zz.childCount - 1];
+						}
 
-// 						var a = "(";
-// 						for (let j = 2; j < tempArr.length; j++) {
-// 							if (tempArr[j] != "") {
-// 								a = a + tempArr[j] + ",";
-// 							}
-// 						}
-// 						a = a + ")";
-// 						var tempAns = {};
-// 						tempAns.name = tempArr[1];
-// 						tempAns.vars = a;
-// 						tempAns.childCount = 0;
-// 						tempAns.children = [];
-// 						zz.childCount++;
-// 						zz.children.push(tempAns);
-// 						level++;
-// 						// console.log("ans is ",JSON.stringify(ans, null, 4));
-// 					}
-// 				}
-// 			}
-// 		}
-// 	}
+						var a = "(";
+						for (let j = 2; j < tempArr.length; j++) {
+							if (tempArr[j] != "") {
+								a = a + tempArr[j] + ",";
+							}
+						}
+						a = a + ")";
+						var tempAns = {};
+						tempAns.name = tempArr[1];
+						tempAns.vars = a;
+						tempAns.childCount = 0;
+						tempAns.children = [];
+						zz.childCount++;
+						zz.children.push(tempAns);
+						level++;
+						// console.log("ans is ",JSON.stringify(ans, null, 4));
+					}
+				}
+			}
+		}
+	}
 
-// 	var ans1 = JSON.stringify(ans, null, 4);
-// 	// console.log(ans1);
-// 	return ans1;
-// };
+	var ans1 = JSON.stringify(ans, null, 4);
+	console.log(ans1);
+	return ans1;
+};
 
 // var createTree = function (data) {
 // 	console.log(data);
@@ -606,5 +628,3 @@ var addFunctionEndPrintStatement = function (data, functionNames, indexes) {
 // 	// console.log(ans1);
 // 	return ans1;
 // };
-
-let createJson = (output) => {};
