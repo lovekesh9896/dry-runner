@@ -1,26 +1,29 @@
-body {
+* {
+	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
 }
-div {
-	box-sizing: border-box;
+
+body {
+	font-family: "Poppins", sans-serif;
+	background-color: #f9f9fb;
 }
 
 #left-section {
 	width: 25vw;
 	height: 100vh;
-	font-family: sans-serif;
-	padding: 20px 30px;
 	overflow: auto;
 	display: inline-block;
+	position: relative;
 }
 
 #heading {
 	width: 100%;
 	display: flex;
 	align-items: center;
-
 	flex-wrap: wrap;
+	padding: 1em 2em;
+	height: 10vh;
 }
 
 #heading img {
@@ -30,13 +33,60 @@ div {
 }
 
 #heading h2 {
-	color: rgb(44, 120, 172);
+	color: #4347fe;
 }
 
 .list-class {
-	margin: 0;
-	padding: 0;
 	list-style-type: none;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin-top: 10px;
+}
+
+.list-class li {
+	margin-top: 20px;
+	width: 90%;
+}
+
+.collapsible {
+	background-color: white;
+	color: black;
+	cursor: pointer;
+	padding: 18px;
+	width: 100%;
+	text-align: left;
+	color: #2b2553;
+	outline: none;
+	font-size: 15px;
+	border: 1px solid #d8d5d5;
+	border-radius: 4px;
+	font-weight: 600;
+}
+
+.collapsible:after {
+	content: "\203a";
+	color: black;
+	font-weight: bold;
+	float: right;
+	margin-left: 5px;
+}
+
+.active:after {
+	content: "\2212";
+}
+
+.content {
+	margin-top: 10px;
+	max-height: 0;
+	overflow: hidden;
+	transition: max-height 0.2s ease-out;
+	background-color: #f1f1f1;
+}
+
+.content ul {
+	padding: 10px 26px;
 }
 
 /* right section */
@@ -54,62 +104,33 @@ div {
 	padding-right: 40px;
 }
 
-#themes {
-	height: 4px;
-	width: 180px;
-	border: 2px solid rgb(121, 131, 187);
-	border-radius: 8px;
+#nab-bar > div {
+	display: flex;
+}
+
+#nav-bar select {
+	width: 100px;
+	height: 30px;
+	margin-left: 10px;
+}
+
+#helper-buttons {
 	display: flex;
 	justify-content: space-between;
-	align-items: center;
-	padding-left: 10px;
-	padding-right: 10px;
-}
-
-#themes button {
-	width: 10px;
-	height: 16px;
-	outline: none;
-	border-radius: 50%;
-	box-sizing: border-box;
-}
-
-.red {
-	background-color: rgb(51, 191, 239);
-	border: 2px solid rgb(51, 191, 239);
-}
-
-.blue {
-	background-color: rgb(230, 128, 56);
-	border: 2px solid rgb(230, 128, 56);
-}
-
-.green {
-	background-color: rgb(33, 80, 128);
-	border: 2px solid rgb(33, 80, 128);
-}
-
-@keyframes theme_animation {
-	from {
-		transform: scale(1, 1);
-		box-shadow: none;
-	}
-	to {
-		transform: scale(1.5, 1.5);
-
-		box-shadow: inset 0px 0px 0px 3px white;
-	}
-}
-
-.highlight {
-	animation: theme_animation 0.3s ease-in-out;
-	animation-fill-mode: both;
+	padding: 10px 30px;
+	width: 80%;
+	position: absolute;
+	transform: translateX(-50%);
+	left: 50%;
+	bottom: 10vh;
+	background-color: inherit;
+	border-radius: 4px;
 }
 
 #helper-buttons img {
-	width: 40px;
-	height: 40px;
-	margin-left: 30px;
+	width: 50px;
+	height: 50px;
+	display: block;
 	/* border: 1px solid black; */
 }
 
@@ -143,7 +164,7 @@ div {
 }
 
 .hide-custom-textarea {
-	display: initial !important;
+	display: initial;
 }
 
 .bottom-bar-button {
@@ -151,223 +172,28 @@ div {
 	height: 40px;
 	font-size: 16px;
 	font-weight: 600;
-	background-color: transparent;
 	border-radius: 8px;
 	outline: none;
-	background-position: 0% 50%;
-	background-repeat: no-repeat;
-	background-size: 0% 110%;
-	transition: background-size 0.5s, color 0.5s;
-}
-
-#submit-button {
-	color: rgb(84, 211, 169);
-	border: 2px solid rgb(84, 211, 169);
-	background-image: linear-gradient(rgb(84, 211, 169), rgb(84, 211, 169));
+	border: 2px solid;
+	transition: 0.4s;
+	cursor: pointer;
+	background: white;
 }
 
 #custom-input {
 	color: rgb(84, 152, 241);
-	border: 2px solid rgb(84, 152, 241);
-	background-image: linear-gradient(rgb(84, 152, 241), rgb(84, 152, 241));
 }
 
-.bottom-bar-button:hover {
-	background-size: 100% 100%;
-	color: #fff !important;
+#submit-button {
+	color: #f44336;
 }
 
-@keyframes submit_animation {
-	from {
-	}
-	to {
-		transform: translate(-60px) rotateX(360deg);
-		font-size: 18px;
-		width: 40px;
-		border-radius: 50%;
-		background-color: rgb(84, 211, 169);
-		color: white;
-	}
+#custom-input:hover {
+	color: white;
+	background: rgb(84, 152, 241);
 }
 
-.onSubmit {
-	animation: submit_animation 0.4s ease-in-out;
-	animation-fill-mode: both;
-}
-
-/*  output div */
-#output-div {
-	width: 90vw;
-	height: 90vh;
-	box-sizing: border-box;
-	border: 1px solid red;
-	position: fixed;
-	top: 5vh;
-	left: 5vw;
-	z-index: 2000;
-	background-color: white;
-	display: none;
-}
-
-#cross-output-div {
-	position: absolute;
-	top: 0;
-	right: 0;
-}
-
-/* tree */
-.tf-tree {
-	font-size: 16px;
-	overflow: auto;
-}
-.tf-tree * {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
-}
-.tf-tree ul {
-	display: inline-flex;
-}
-.tf-tree li {
-	align-items: center;
-	display: flex;
-	flex-direction: column;
-	flex-wrap: wrap;
-	padding: 0 1em;
-	position: relative;
-}
-.tf-tree li ul {
-	margin: 2em 0;
-}
-.tf-tree li li:before {
-	border-top: 0.0625em solid #000;
-	content: "";
-	display: block;
-	height: 0.0625em;
-	left: -0.03125em;
-	position: absolute;
-	top: -1.03125em;
-	width: 100%;
-}
-.tf-tree li li:first-child:before {
-	left: calc(50% - 0.03125em);
-	max-width: calc(50% + 0.0625em);
-}
-.tf-tree li li:last-child:before {
-	left: auto;
-	max-width: calc(50% + 0.0625em);
-	right: calc(50% - 0.03125em);
-}
-.tf-tree li li:only-child:before {
-	display: none;
-}
-.tf-tree li li:only-child > .tf-nc:before,
-.tf-tree li li:only-child > .tf-node-content:before {
-	height: 1.0625em;
-	top: -1.0625em;
-}
-.tf-tree .tf-nc,
-.tf-tree .tf-node-content {
-	border: 0.0625em solid #000;
-	display: inline-block;
-	padding: 0.5em 1em;
-	position: relative;
-}
-.tf-tree .tf-nc:before,
-.tf-tree .tf-node-content:before {
-	top: -1.03125em;
-}
-.tf-tree .tf-nc:after,
-.tf-tree .tf-nc:before,
-.tf-tree .tf-node-content:after,
-.tf-tree .tf-node-content:before {
-	border-left: 0.0625em solid #000;
-	content: "";
-	display: block;
-	height: 1em;
-	left: calc(50% - 0.03125em);
-	position: absolute;
-	width: 0.0625em;
-}
-.tf-tree .tf-nc:after,
-.tf-tree .tf-node-content:after {
-	top: calc(100% + 0.03125em);
-}
-.tf-tree .tf-nc:only-child:after,
-.tf-tree .tf-node-content:only-child:after,
-.tf-tree > ul > li > .tf-nc:before,
-.tf-tree > ul > li > .tf-node-content:before {
-	display: none;
-}
-.tf-tree.tf-gap-sm li {
-	padding: 0 0.6em;
-}
-.tf-tree.tf-gap-sm li > .tf-nc:before,
-.tf-tree.tf-gap-sm li > .tf-node-content:before {
-	height: 0.6em;
-	top: -0.6em;
-}
-.tf-tree.tf-gap-sm li > .tf-nc:after,
-.tf-tree.tf-gap-sm li > .tf-node-content:after {
-	height: 0.6em;
-}
-.tf-tree.tf-gap-sm li ul {
-	margin: 1.2em 0;
-}
-.tf-tree.tf-gap-sm li li:before {
-	top: -0.63125em;
-}
-.tf-tree.tf-gap-sm li li:only-child > .tf-nc:before,
-.tf-tree.tf-gap-sm li li:only-child > .tf-node-content:before {
-	height: 0.6625em;
-	top: -0.6625em;
-}
-.tf-tree.tf-gap-lg li {
-	padding: 0 1.5em;
-}
-.tf-tree.tf-gap-lg li > .tf-nc:before,
-.tf-tree.tf-gap-lg li > .tf-node-content:before {
-	height: 1.5em;
-	top: -1.5em;
-}
-.tf-tree.tf-gap-lg li > .tf-nc:after,
-.tf-tree.tf-gap-lg li > .tf-node-content:after {
-	height: 1.5em;
-}
-.tf-tree.tf-gap-lg li ul {
-	margin: 3em 0;
-}
-.tf-tree.tf-gap-lg li li:before {
-	top: -1.53125em;
-}
-.tf-tree.tf-gap-lg li li:only-child > .tf-nc:before,
-.tf-tree.tf-gap-lg li li:only-child > .tf-node-content:before {
-	height: 1.5625em;
-	top: -1.5625em;
-}
-.tf-tree li.tf-dotted-children .tf-nc:after,
-.tf-tree li.tf-dotted-children .tf-nc:before,
-.tf-tree li.tf-dotted-children .tf-node-content:after,
-.tf-tree li.tf-dotted-children .tf-node-content:before {
-	border-left-style: dotted;
-}
-.tf-tree li.tf-dotted-children li:before {
-	border-top-style: dotted;
-}
-.tf-tree li.tf-dotted-children > .tf-nc:before,
-.tf-tree li.tf-dotted-children > .tf-node-content:before {
-	border-left-style: solid;
-}
-.tf-tree li.tf-dashed-children .tf-nc:after,
-.tf-tree li.tf-dashed-children .tf-nc:before,
-.tf-tree li.tf-dashed-children .tf-node-content:after,
-.tf-tree li.tf-dashed-children .tf-node-content:before {
-	border-left-style: dashed;
-}
-.tf-tree li.tf-dashed-children li:before {
-	border-top-style: dashed;
-}
-.tf-tree li.tf-dashed-children > .tf-nc:before,
-.tf-tree li.tf-dashed-children > .tf-node-content:before {
-	border-left-style: solid;
+#submit-button:hover {
+	color: white;
+	background: #f44336;
 }

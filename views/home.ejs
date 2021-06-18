@@ -14,6 +14,11 @@
 			href="https://fonts.googleapis.com/icon?family=Material+Icons"
 			rel="stylesheet"
 		/>
+		<link rel="preconnect" href="https://fonts.gstatic.com" />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap"
+			rel="stylesheet"
+		/>
 		<link
 			rel="stylesheet"
 			type="text/css"
@@ -52,49 +57,71 @@
 
 			<ul class="list-class">
 				<li>
-					<h4>HOW TO USE</h4>
-					<ul>
-						<li>Write or paste your code in the editor</li>
-						<li>Enter custom input in bottom right, if any.</li>
-						<li>Hit the submit button and wait for the magic.</li>
-					</ul>
+					<button class="collapsible">HOW TO USE?</button>
+					<div class="content">
+						<ul>
+							<li>Write or paste your code in the editor</li>
+							<li>Enter custom input in bottom right, if any.</li>
+							<li>
+								Hit the submit button and wait for the magic.
+							</li>
+						</ul>
+					</div>
+				</li>
+
+				<li>
+					<button class="collapsible">FEEDBACK</button>
+					<div class="content">
+						<ul>
+							<li>
+								Click on feedback button on top right corner.
+							</li>
+							<li>
+								if there is any error in website graphics please
+								submit your code.
+							</li>
+							<li>Your suggestion are always welcome.</li>
+						</ul>
+					</div>
 				</li>
 				<li>
-					<h4>FEEDBACK</h4>
-					<ul>
-						<li>Click on feedback button on top right corner.</li>
-						<li>
-							if there is any error in website graphics please
-							submit your code.
-						</li>
-						<li>Your suggestion are always welcome.</li>
-					</ul>
-				</li>
-				<li>
-					<h4>Contribute</h4>
-					<ul>
-						<li>You can always improve the website.</li>
-						<li>
-							Go to github page to chage the code or suggest some
-							UI/UX change in suggestion box.
-						</li>
-						<li>Buy me a course on machine learning</li>
-					</ul>
+					<button class="collapsible">Contribute</button>
+					<div class="content">
+						<ul>
+							<li>You can always improve the website.</li>
+							<li>
+								Go to github page to chage the code or suggest
+								some UI/UX change in suggestion box.
+							</li>
+							<li>Buy me a course on machine learning</li>
+						</ul>
+					</div>
 				</li>
 			</ul>
+
+			<div id="helper-buttons">
+				<a href=""><img src="/images/feedback.png" alt="" /></a>
+				<a href=""><img src="/images/github.png" alt="" /></a>
+				<a href=""><img src="/images/donate.png" alt="" /></a>
+			</div>
 		</div>
 
 		<div id="right-section">
 			<div id="nav-bar">
-				<div id="themes">
-					<button class="theme-buttons red"></button>
-					<button class="theme-buttons blue"></button>
-					<button class="theme-buttons green"></button>
+				<div class="theme-container">
+					<span>Select Theme :</span>
+					<select name="theme" id="theme-changer">
+						<option value="dracula">dracula</option>
+						<option value="duotone-light">duotone-light</option>
+						<option value="blackboard">blackboard</option>
+					</select>
 				</div>
-				<div id="helper-buttons">
-					<a href=""><img src="/images/feedback.png" alt="" /></a>
-					<a href=""><img src="/images/github.png" alt="" /></a>
-					<a href=""><img src="/images/donate.png" alt="" /></a>
+
+				<div class="language-container">
+					<span>Select Language :</span>
+					<select name="language" id="language-changer">
+						<option value="Java">Java</option>
+					</select>
 				</div>
 			</div>
 
@@ -117,12 +144,7 @@
 			</div>
 		</div>
 
-		<!-- <div id="output-div" style="width: 90vw; display: block">
-			<div class="tf-tree" id="abc"></div>
-			<span id="output-div-span"></span>
-        <button id="cross-output-div">X</button>
-		</div> -->
-		<script src="/js/queue.js"></script>
 		<script src="/js/home.js"></script>
+		<script src="/js/styleHandler.js"></script>
 	</body>
 </html>
